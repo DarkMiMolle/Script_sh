@@ -1,15 +1,15 @@
 #! /bin/sh
 
-check_opt_r() {
-	if [ $opt_kind == "-r" ]; then
+function check_opt_r() {
+	if [ $opt_kind = "-r" ]; then
 		echo "Fail Usage: $Usage"
 		echo "$arg can not follow $opt_kind"
 		exit 3
 	fi
 }
 
-check_opt_tag() {
-	if [ $opt_kind == "--tag" ]; then
+function check_opt_tag() {
+	if [ $opt_kind = "--tag" ]; then
 		echo "Fail Usage: $Usage"
 		echo "$arg can not follow $opt_kind"
 		exit 3
@@ -44,37 +44,37 @@ force=0
 	# -h        :    display that help"
 
 for arg in $@; do
-	if [ $arg == "-h" || $arg == "--help" ]; then
+	if [ $arg = "-h" || $arg = "--help" ]; then
 		check_opt_r
 		check_opt_tag
 		help="$arg"
 
-	elif [ $arg == "-f" ]; then
+	elif [ $arg = "-f" ]; then
 		check_opt_r
 		check_opt_tag
 		force=1
 
-	elif [ $arg == "-r" && $remote == "" ]; then
+	elif [ $arg = "-r" && $remote = "" ]; then
 		check_opt_r
 		check_opt_tag
 		opt_kind="-r"
 
-	elif [ $arg == "-t" && $testsuit == "" ]; then
+	elif [ $arg = "-t" && $testsuit = "" ]; then
 		check_opt_r
 		check_opt_tag
 		opt_kind="-t"
 		testsuit="N"
 
-	elif [ $arg == "--tag" && $tag == "" ]; then
+	elif [ $arg = "--tag" && $tag = "" ]; then
 		check_opt_r
 		check_opt_tag
 		opt_kind="--tag"
 
-	elif [ $opt_kind == "-r" ]; then
+	elif [ $opt_kind = "-r" ]; then
 		remote="$arg"
 		opt_kind=""
 
-	elif [ $opt_kind == "-t" ]; then
+	elif [ $opt_kind = "-t" ]; then
 		if [ $arg != "N" -a $arg != "Y" ]; then
 			echo "Fail Usage: $Usage" >&2
 			echo "option -t can be followed by Y or N and is set to N by default" >&2
@@ -84,9 +84,9 @@ for arg in $@; do
 		fi
 		opt_kind=""
 
-	elif [ $opt_kind == "--tag" ]; then
-		if [ ${arg:0:1} == "-" ]; then
-			if [ $arg == "-no-tag" ]; then
+	elif [ $opt_kind = "--tag" ]; then
+		if [ ${arg:0:1} = "-" ]; then
+			if [ $arg = "-no-tag" ]; then
 				tag="-no-arg"
 			else
 				echo "$arg is not a valid tag.">&2
@@ -138,7 +138,6 @@ if [ `cat .__tmp_push__/error` != "" ]; then
 	echo ""
 	resume="$RED$BOLD$BLINKING!\tMAKE FAILE\t!$NORMAL"
 	if [ $force -eq 0 ]; then
-		echo "$resume"
 		exit 1
 	fi
 	force=2
@@ -153,7 +152,7 @@ if [ $testsuit != "" ]; then
 	make check
 	if [ `cat .__tmp_push__/error` != "" ]; then
 		resume="$resume\n$RED$BOLD$BLINKING!\tMAKE CHECK FAIL \t!$NORMAL"
-		if [ $testsuit == "N" ]; then
+		if [ $testsuit = "N" ]; then
 			echo "\n$resume"
 			exit 2
 		fi
@@ -162,12 +161,12 @@ if [ $testsuit != "" ]; then
 		testsuit="OK"
 	fi	
 fi
-if [ $testsuit == "OK" || $testsuit == "" || $testsuit == "Y" ]; then
+if [ $testsuit = "OK" || $testsuit = "" || $testsuit = "Y" ]; then
 	clear
 	echo "$resume"
 	git push
 
-	if [ $tag == "" ]; then
+	if [ $tag = "" ]; then
 		echo "\n$BOLD$UNDERLINE Tag$NORMAL: "
 		read tag
 	fi
