@@ -86,7 +86,7 @@ for arg in $@; do
 
 	elif [ "$opt_kind" = "--tag" ]; then
 		# if [ "${arg:0:1}" = "-" ]; then
-			if [ `echo "$arg" | cut -c0-1` ]; then
+		if [ `echo "$arg" | cut -c0-1` = "-" ]; then
 
 			if [ "$arg" = "-no-tag" ]; then
 				tag="-no-tag"
