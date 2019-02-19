@@ -86,7 +86,7 @@ for arg in $@; do
 
 	elif [ "$opt_kind" = "--tag" ]; then
 		# if [ "${arg:0:1}" = "-" ]; then
-		if [ `echo "$arg" | cut -c0-1` = "-" ]; then
+		if [ "`echo "$arg" | cut -c1-2`" = "-" ]; then
 
 			if [ "$arg" = "-no-tag" ]; then
 				tag="-no-tag"
@@ -136,10 +136,13 @@ fi
 mkdir .__tmp_push__
 make
 make 2> .__tmp_push__/error
-if [ -n `cat .__tmp_push__/error` ]; then
+make_res="$?"
+
+if [ -n "`cat .__tmp_push__/error`" -o "$make_res" -ne 0 ]; then
 	echo ""
 	resume="$RED$BOLD$BLINKING!\tMAKE FAILE\t!$NORMAL"
 	if [ $force -eq 0 ]; then
+		echo "$resume"
 		exit 1
 	fi
 	force=2
@@ -148,11 +151,11 @@ if [ $force -ne 2 ]; then
 	clear
 	resume="$GREEN$BOLD\tCompile OK$NORMAL"	
 fi
-if [ -n "testsuit" ]; then
+if [ -n "$testsuit" -a "$make_res" -eq 0 ]; then
 	make check 2>.__tmp_push__/error
 	clear
 	make check
-	if [ -n `cat .__tmp_push__/error` ]; then
+	if [ -n "`cat .__tmp_push__/error`" ]; then
 		resume="$resume\n$RED$BOLD$BLINKING!\tMAKE CHECK FAIL \t!$NORMAL"
 		if [ "$testsuit" = "N" ]; then
 			echo "\n$resume"
@@ -162,8 +165,16 @@ if [ -n "testsuit" ]; then
 		resume="$resume\n$GREEN$BOLD\tmake check OK$NORMAL"
 		testsuit="OK"
 	fi	
+elif [ -n "$testsuit" -a "$make_res" -ne 0 ]; then
+	resume="$resume\n$RED$BOLD$BLINKING!\tMAKE CHECK IMPOSSIBLE \t!$NORMAL"
+	if [ "$force" -eq 0 ]; then
+		echo "$resume"
+		exit 2
+	else
+		testsuit="Y"
+	fi
 fi
-if [ "$testsuit" = "OK" -o -n "$testsuit" -o "$testsuit" = "Y" ]; then
+if [ "$testsuit" = "OK" -o "$testsuit" = "" -o "$testsuit" = "Y" ]; then
 	clear
 	echo "$resume"
 	git push
