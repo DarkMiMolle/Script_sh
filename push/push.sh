@@ -123,14 +123,18 @@ done
 if [ -n "$help" ]; then
 	echo "$Usage"
   echo ""
-    echo "-r        :    also push on 'remote_name'."
-    echo ""
-    echo "-t        :    execute a make check and stop if 'continue' is set to N.\n
-                   continue if 'continue' is set to  Y."
-    echo ""
-    echo "--tag     :    set the tag 'tagname' (for now tagname is optional)."
-    echo ""
-	echo "-h        :    display that help"
+    echo "-r        :    Also push on 'remote_name'."
+    echo "--------------------------------------------------------------------------------"
+    echo "-t        :    Execute a make check and stop if 'continue' is set to N."
+    echo "          |    Continue if 'continue' is set to  Y."
+    echo "--------------------------------------------------------------------------------"
+    echo "--tag     :    Set the tag 'tagname' (for now tagname is optional)."
+    echo "--------------------------------------------------------------------------------"
+    echo "-f        :    Force the push."
+	echo "          |    If anything fail it will clear the terminal but will still let"
+	echo "          |      you know you faild."
+	echo "--------------------------------------------------------------------------------"
+	echo "-h        :    Display that help"
 	exit 0
 fi
 mkdir .__tmp_push__
