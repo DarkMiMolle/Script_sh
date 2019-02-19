@@ -75,7 +75,7 @@ for arg in $@; do
 		opt_kind=""
 
 	elif [ "$opt_kind" = "-t" ]; then
-		if [ $arg != "N" -a $arg != "Y" ]; then
+		if [ "$arg" != "N" -a "$arg" != "Y" ]; then
 			echo "Fail Usage: $Usage" >&2
 			echo "option -t can be followed by Y or N and is set to N by default" >&2
 			exit 3
@@ -101,26 +101,26 @@ for arg in $@; do
 		echo "Fail Usage: $Usage\n" >&2
 		echo "$arg is not an option or is allready set" >&2
 		echo "here are the options used:"
-		if [ $remote != "" ]; then
+		if [ "$remote" != "" ]; then
 			echo "-r : $remote"
 		fi
 
-		if [ $testsuit != "" ]; then
+		if [ "$testsuit" != "" ]; then
 			echo "-t : $testsuit"
 		fi
 
-		if [ $tag != "" ]; then
+		if [ "$tag" != "" ]; then
 			echo "--tag : $tag"
 		fi
-		if [ $help != "" ]; then
+		if [ "$help" != "" ]; then
 			echo "$help"
 		fi
 		exit 3
 	fi
 done
-if [ $help != "" ]; then
+if [ "$help" != "" ]; then
 	echo "$Usage"
-    echo ""
+  echo ""
     echo "-r        :    also push on 'remote_name'."
     echo ""
     echo "-t        :    execute a make check and stop if 'continue' is set to N.\n
@@ -146,7 +146,7 @@ if [ $force -ne 2 ]; then
 	clear
 	resume="$GREEN$BOLD\tCompile OK$NORMAL"	
 fi
-if [ $testsuit != "" ]; then
+if [ "$testsuit" -n ]; then
 	make check 2>.__tmp_push__/error
 	clear
 	make check
@@ -161,7 +161,7 @@ if [ $testsuit != "" ]; then
 		testsuit="OK"
 	fi	
 fi
-if [ "$testsuit" = "OK" || "$testsuit" = "" || "$testsuit" = "Y" ]; then
+if [ "$testsuit" = "OK" || "$testsuit" -n || "$testsuit" = "Y" ]; then
 	clear
 	echo "$resume"
 	git push
@@ -170,11 +170,11 @@ if [ "$testsuit" = "OK" || "$testsuit" = "" || "$testsuit" = "Y" ]; then
 		echo "\n$BOLD$UNDERLINE Tag$NORMAL: "
 		read tag
 	fi
-	if [ $tag != "-no-tag" ]; then
+	if [ "$tag" != "-no-tag" ]; then
 		git tag "$tag"
 		git push --tags	
 	fi
-	if [ $remote != "" ]; then
+	if [ "$remote" -n ]; then
 		git push "$remote"
 		git push "$remote" --tags	
 	fi
