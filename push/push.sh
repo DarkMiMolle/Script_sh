@@ -23,7 +23,7 @@ UNDERLINE="\033[4m"
 BLINKING="\033[5m"
 NORMAL="\033[0m"
 
-Usage="./push [-r remote_name][-t <continue>=N][--tag <tagname>][-h\--help]"
+Usage="./push [-r remote_name ][-t <continue>=N ][--tag <tagname>][-h\--help ]"
 
 opt_kind="" 
 remote=""
@@ -85,9 +85,11 @@ for arg in $@; do
 		opt_kind=""
 
 	elif [ "$opt_kind" = "--tag" ]; then
-		if [ ${arg:0:1} = "-" ]; then
+		# if [ "${arg:0:1}" = "-" ]; then
+			if [ `echo "$arg" | cut -c0-1` ]; then
+
 			if [ "$arg" = "-no-tag" ]; then
-				tag="-no-arg"
+				tag="-no-tag"
 			else
 				echo "$arg is not a valid tag.">&2
 				exit 3
@@ -101,24 +103,24 @@ for arg in $@; do
 		echo "Fail Usage: $Usage\n" >&2
 		echo "$arg is not an option or is allready set" >&2
 		echo "here are the options used:"
-		if [ "$remote" != "" ]; then
+		if [ -n "$remote" ]; then
 			echo "-r : $remote"
 		fi
 
-		if [ "$testsuit" != "" ]; then
+		if [ -n "$testsuit" ]; then
 			echo "-t : $testsuit"
 		fi
 
-		if [ "$tag" != "" ]; then
+		if [ -n "$tag" ]; then
 			echo "--tag : $tag"
 		fi
-		if [ "$help" != "" ]; then
+		if [ -n "$help" ]; then
 			echo "$help"
 		fi
 		exit 3
 	fi
 done
-if [ "$help" != "" ]; then
+if [ -n "$help" ]; then
 	echo "$Usage"
   echo ""
     echo "-r        :    also push on 'remote_name'."
@@ -134,7 +136,7 @@ fi
 mkdir .__tmp_push__
 make
 make 2> .__tmp_push__/error
-if [ `cat .__tmp_push__/error` != "" ]; then
+if [ -n `cat .__tmp_push__/error` ]; then
 	echo ""
 	resume="$RED$BOLD$BLINKING!\tMAKE FAILE\t!$NORMAL"
 	if [ $force -eq 0 ]; then
@@ -146,11 +148,11 @@ if [ $force -ne 2 ]; then
 	clear
 	resume="$GREEN$BOLD\tCompile OK$NORMAL"	
 fi
-if [ "$testsuit" -n ]; then
+if [ -n "testsuit" ]; then
 	make check 2>.__tmp_push__/error
 	clear
 	make check
-	if [ `cat .__tmp_push__/error` != "" ]; then
+	if [ -n `cat .__tmp_push__/error` ]; then
 		resume="$resume\n$RED$BOLD$BLINKING!\tMAKE CHECK FAIL \t!$NORMAL"
 		if [ "$testsuit" = "N" ]; then
 			echo "\n$resume"
@@ -161,7 +163,7 @@ if [ "$testsuit" -n ]; then
 		testsuit="OK"
 	fi	
 fi
-if [ "$testsuit" = "OK" || "$testsuit" -n || "$testsuit" = "Y" ]; then
+if [ "$testsuit" = "OK" -o -n "$testsuit" -o "$testsuit" = "Y" ]; then
 	clear
 	echo "$resume"
 	git push
@@ -174,7 +176,7 @@ if [ "$testsuit" = "OK" || "$testsuit" -n || "$testsuit" = "Y" ]; then
 		git tag "$tag"
 		git push --tags	
 	fi
-	if [ "$remote" -n ]; then
+	if [ -n "$remote" ]; then
 		git push "$remote"
 		git push "$remote" --tags	
 	fi
