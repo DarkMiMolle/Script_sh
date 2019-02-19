@@ -23,7 +23,7 @@ UNDERLINE="\033[4m"
 BLINKING="\033[5m"
 NORMAL="\033[0m"
 
-Usage="./push [-r remote_name ][-t <continue>=N ][--tag <tagname>][-h\--help ]"
+Usage="./push [-r remote_name ][-t <continue>=N ][--tag <tagname>][-f][-h\--help ]"
 
 opt_kind="" 
 remote=""
