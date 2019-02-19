@@ -54,18 +54,18 @@ for arg in $@; do
 		check_opt_tag
 		force=1
 
-	elif [ "$arg" = "-r" && "$remote" = "" ]; then
+	elif [ "$arg" = "-r" -a "$remote" = "" ]; then
 		check_opt_r
 		check_opt_tag
 		opt_kind="-r"
 
-	elif [ "$arg" = "-t" && "$testsuit" = "" ]; then
+	elif [ "$arg" = "-t" -a "$testsuit" = "" ]; then
 		check_opt_r
 		check_opt_tag
 		opt_kind="-t"
 		testsuit="N"
 
-	elif [ "$arg" = "--tag" && "$tag" = "" ]; then
+	elif [ "$arg" = "--tag" -a "$tag" = "" ]; then
 		check_opt_r
 		check_opt_tag
 		opt_kind="--tag"
