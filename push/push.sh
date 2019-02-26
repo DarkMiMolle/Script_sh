@@ -137,12 +137,10 @@ if [ -n "$help" ]; then
 	echo "-h        :    Display that help"
 	exit 0
 fi
-mkdir .__tmp_push__
 make
-make 2> .__tmp_push__/error
 make_res="$?"
 
-if [ -n "`cat .__tmp_push__/error`" -o "$make_res" -ne 0 ]; then
+if [ "$make_res" -ne 0 ]; then
 	echo ""
 	resume="$RED$BOLD$BLINKING!\tMAKE FAILE\t!$NORMAL"
 	if [ $force -eq 0 ]; then
@@ -156,10 +154,10 @@ if [ $force -ne 2 ]; then
 	resume="$GREEN$BOLD\tCompile OK$NORMAL"	
 fi
 if [ -n "$testsuit" -a "$make_res" -eq 0 ]; then
-	make check 2>.__tmp_push__/error
 	clear
-	make check
-	if [ -n "`cat .__tmp_push__/error`" ]; then
+	make checkmake_res="$?"
+
+	if [ "$make_res" -ne 0 ; then
 		resume="$resume\n$RED$BOLD$BLINKING!\tMAKE CHECK FAIL \t!$NORMAL"
 		if [ "$testsuit" = "N" ]; then
 			echo "\n$resume"
@@ -190,12 +188,12 @@ if [ "$testsuit" = "OK" -o "$testsuit" = "" -o "$testsuit" = "Y" ]; then
 	if [ "$tag" != "-no-tag" ]; then
 		git tag "$tag"
 		git push --tags	
+	else
+		tag=""
 	fi
 	if [ -n "$remote" ]; then
 		git push "$remote"
-		git push "$remote" --tags	
+		git push "$remote" "$tag"	
 	fi
 fi
-
-rm -r .__tmp_push__
 exit 0
